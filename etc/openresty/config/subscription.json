@@ -1,0 +1,51 @@
+{
+  "main_config": {
+    "add": "0.00.000.85",
+    "host": "rage.ir"
+  },
+  "alternatives": [
+    {
+      "add": "0.00.000.29",
+      "host": "rage.ir", 
+      "ps_suffix": " (C)",
+      "enabled": true
+    },
+    {
+      "add": "0.00.000.180",
+      "host": "rage2.ir", 
+      "ps_suffix": " (D)",
+      "enabled": true
+    },
+    {
+      "add": "0.00.000180",
+      "host": "rage.ir",
+      "ps_suffix": " (D2)", 
+      "enabled": true
+    },
+    {
+      "add": "0.00.00.53r",
+      "host": "dl1.fp-network.ir",
+      "ps_suffix": " (A)", 
+      "enabled": true
+    },
+    {
+      "add": "0.00.000.193",
+      "host": "rage.ir", 
+      "ps_suffix": " (اتصال در زمان اختلالات شدید و نت ملی)",
+      "enabled": false
+    },
+    {
+      "add": "0.00.000.151",
+      "host": "yjc.ir",
+      "ps_suffix": " (G)",
+      "enabled": false
+    }
+  ],
+    "sos": {
+    "enabled": false,
+    "only_for_ws": true,
+    "configs": [ 
+   "trojan://xoFLGb%5D%7D%7DjK%24@mcinext.com:443?security=tls&sni=da.pages.DEV&alpn=http%2F1.1&fp=randomized&allowInsecure=1&type=ws&host=d>
+    ]
+  }
+}
