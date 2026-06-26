@@ -1,0 +1,17 @@
+/usr/local/openresty/nginx/logs/*.log
+/var/log/openresty/*.log {
+    daily
+    rotate 7
+    size 50M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    create 0640 www-data www-data
+    sharedscripts
+    postrotate
+        if [ -f /usr/local/openresty/nginx/logs/nginx.pid ]; then
+            kill -USR1 `cat /usr/local/openresty/nginx/logs/nginx.pid`
+        fi
+    endscript
+}
