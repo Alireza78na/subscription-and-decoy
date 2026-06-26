@@ -1,0 +1,179 @@
+cat << 'EOF' > /var/www/html/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudBox - Secure File Hosting</title>
+    <style>
+        :root { --primary: #0056b3; --secondary: #007bff; --bg: #f4f7f6; --text: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; }
+        header { background: #fff; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); text-decoration: none; }
+        nav a { margin-left: 15px; text-decoration: none; color: #555; font-weight: 500; transition: 0.3s; }
+        nav a:hover { color: var(--primary); }
+        .btn-login { background: var(--secondary); color: #fff; padding: 6px 16px; border-radius: 4px; }
+        .btn-login:hover { background: var(--primary); color: #fff; }
+        main { padding: 4rem 5%; text-align: center; min-height: 70vh; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: #222; }
+        .hero p { font-size: 1.1rem; margin-bottom: 30px; color: #666; }
+        .upload-box { background: #fff; border: 2px dashed #ccc; border-radius: 8px; padding: 40px; max-width: 600px; margin: 0 auto; transition: 0.3s; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .upload-box:hover { border-color: var(--secondary); background: #fafafa; }
+        .upload-icon { font-size: 4rem; color: #ccc; margin-bottom: 15px; display: block; }
+        .btn-upload { background: var(--primary); color: white; border: none; padding: 12px 25px; font-size: 1.1rem; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-upload:hover { background: #004494; }
+        .features { display: flex; justify-content: center; gap: 30px; margin-top: 50px; flex-wrap: wrap; }
+        .feature-card { background: #fff; padding: 20px; border-radius: 8px; width: 250px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .feature-card h3 { color: var(--primary); margin-bottom: 10px; }
+        footer { background: #333; color: #aaa; text-align: center; padding: 25px 0; width: 100%; }
+        footer a { color: #ccc; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        footer a:hover { color: #fff; }
+        
+        #file-input { display: none; }
+        .progress-container { display: none; margin-top: 20px; text-align: left; }
+        .progress-bar { width: 100%; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 10px; background: var(--secondary); width: 0%; transition: width 0.3s ease; }
+        .msg { margin-top: 15px; font-size: 0.95rem; color: #d9534f; display: none; background: #fdf7f7; padding: 10px; border-radius: 4px; border: 1px solid #f2dede; }
+        
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 15px; }
+            nav a { margin: 0 5px; font-size: 0.9rem; }
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">CloudBox</a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="#premium">Premium</a>
+            <a href="#earn">Make Money</a>
+            <a href="#login" class="btn-login">Login / Register</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Secure Cloud File Storage</h1>
+            <p>Upload, share, and manage your files with enterprise-grade security.</p>
+            
+            <div class="upload-box" id="drop-zone">
+                <span class="upload-icon">📁</span>
+                <p style="margin-bottom: 15px; color: #555;">Drag and drop your files here or</p>
+                <input type="file" id="file-input">
+                <button class="btn-upload" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                
+                <div class="progress-container" id="progress-container">
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #555;">
+                        <span>Uploading...</span>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="msg" id="error-msg"></div>
+            </div>
+        </section>
+
+        <section class="features" id="premium">
+            <div class="feature-card">
+                <h3>High Speed</h3>
+                <p>Experience unmetered bandwidth and unlimited download speeds for premium users.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Secure Storage</h3>
+                <p>256-bit AES encryption ensures your data remains completely private and secure.</p>
+            </div>
+            <div class="feature-card" id="earn">
+                <h3>Pay Per Download</h3>
+                <p>Upload files and earn money for every 1,000 downloads. Payouts processed weekly.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 CloudBox Hosting. All rights reserved.</p>
+        <div style="margin-top: 15px;">
+            <a href="#terms">Terms of Service</a>
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#dmca">DMCA</a>
+            <a href="#contact">Contact Us</a>
+        </div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        const progressContainer = document.getElementById('progress-container');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const errorMsg = document.getElementById('error-msg');
+
+        function simulateUpload(file) {
+            errorMsg.style.display = 'none';
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressText.innerText = '0%';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 12) + 4;
+                if (progress >= 88) {
+                    clearInterval(interval);
+                    progressFill.style.width = '88%';
+                    progressText.innerText = '88%';
+                    
+                    // شبیه‌سازی مکث و سپس نمایش خطای سیستم محدودیت حجم
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        errorMsg.innerHTML = "<strong>Upload Failed:</strong> Guest accounts are limited to 5MB per file to prevent abuse. Please <a href='#login' style='color:#d9534f; text-decoration:underline;'>Login or Register</a> to upload larger files.";
+                        errorMsg.style.display = 'block';
+                        fileInput.value = ''; 
+                    }, 1200);
+                } else {
+                    progressFill.style.width = progress + '%';
+                    progressText.innerText = progress + '%';
+                }
+            }, 400);
+        }
+
+        fileInput.addEventListener('change', function() {
+            if(this.files.length > 0) simulateUpload(this.files[0]);
+        });
+
+        // افکت‌های درگ و دراپ
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.style.borderColor = '#007bff';
+                dropZone.style.background = '#f8fbff';
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.style.borderColor = '#ccc';
+                dropZone.style.background = '#fff';
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            if(files.length > 0) simulateUpload(files[0]);
+        }, false);
+    </script>
+</body>
+</html>
+EOF
