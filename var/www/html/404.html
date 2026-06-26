@@ -1,0 +1,46 @@
+cat << 'EOF' > /var/www/html/404.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found - FP Network</title>
+    <style>
+        :root { --primary: #2563eb; --primary-hover: #1d4ed8; --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b; --card-bg: #ffffff; --border-color: #e2e8f0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; text-align: center; }
+        header { background: var(--card-bg); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; }
+        h1 { font-size: 8rem; font-weight: 800; color: #cbd5e1; line-height: 1; margin-bottom: 15px; letter-spacing: -0.02em; }
+        h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); }
+        p { font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin-bottom: 35px; line-height: 1.6; }
+        .btn { background: var(--primary); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 500; transition: background 0.2s; border: none; cursor: pointer; }
+        .btn:hover { background: var(--primary-hover); }
+        footer { background: #0f172a; color: #94a3b8; padding: 30px 0; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--primary)" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM14 13V17H10V13H7L12 8L17 13H14Z"/>
+            </svg>
+            FP Network
+        </a>
+    </header>
+    <main>
+        <h1>404</h1>
+        <h2>Page Not Found</h2>
+        <p>The file or directory you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+        <a href="/" class="btn">Return to Homepage</a>
+    </main>
+    <footer>
+        <p>&copy; 2026 FP Network Storage. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+EOF
+
+chmod 644 /var/www/html/404.html
+chown -R www-data:www-data /var/www/html/
