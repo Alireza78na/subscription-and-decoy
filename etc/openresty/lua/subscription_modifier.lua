@@ -1,5 +1,15 @@
 local cjson = require "cjson"
 
+-- اضافه کردن Seed رندوم و لیست User-Agent های استاندارد
+math.randomseed(ngx.now() * 1000)
+local standard_uas = {
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15"
+}
+
 -- مسیر فایل پیکربندی
 local config_file = "/etc/openresty/config/subscription.json"
 
@@ -190,17 +200,22 @@ if data and ngx.arg[2] == false then
             end
 
             if is_ws and original_name ~= "" then
-                -- هسته جهش‌یافته هوشمند: جایگذاری مقادیر با حفظ ۱۰۰ درصدی ساختار کلش
+-- هسته جهش‌یافته هوشمند: جایگذاری مقادیر با حفظ ۱۰۰ درصدی ساختار کلش
                 local function mutate_proxy(lines_to_mutate, new_name, new_server, new_host)
                     local mutated = {}
                     local ws_opts_indent = nil
                     local has_headers = false
                     local has_sni = false
+                    local has_ua = false
                     local field_indent = "  "
+                    
+                    -- انتخاب یک User-Agent رندوم از لیست برای این کانفیگ
+                    local random_ua = standard_uas[math.random(1, #standard_uas)]
 
-                    -- اسکن اولیه بلاک
+                    -- اسکن اولیه بلاک برای پیدا کردن ساختارهای موجود
                     for _, line in ipairs(lines_to_mutate) do
                         if line:match("^%s*headers:") then has_headers = true end
+                        if line:match("^%s*User%-Agent:") or line:match("^%s*user%-agent:") then has_ua = true end
                         if line:match("^%s*sni:") or line:match("^%s*%-%s*sni:") then has_sni = true end
                         local ind = line:match("^(%s*)[%w%-]+:")
                         if ind and #ind > 0 then field_indent = ind end
@@ -226,13 +241,21 @@ if data and ngx.arg[2] == false then
                         
                         table.insert(mutated, new_line)
 
-                        -- تزریق هدرها در صورت عدم وجود (رعایت دقیق تورفتگی)
+                        -- تزریق هوشمند هدرها و User-Agent رندوم
                         if line:match("^%s*ws%-opts:%s*$") then
                             local base_indent = line:match("^(%s*)")
                             ws_opts_indent = base_indent .. "  "
+                            -- اگر کلا هدر نداشت، بلاک هدرها رو می‌سازیم
                             if not has_headers then
                                 table.insert(mutated, ws_opts_indent .. "headers:")
                                 table.insert(mutated, ws_opts_indent .. "  Host: \"" .. new_host .. "\"")
+                                table.insert(mutated, ws_opts_indent .. "  User-Agent: \"" .. random_ua .. "\"")
+                            end
+                        elseif line:match("^%s*headers:%s*$") then
+                            -- اگر بلاک هدر وجود داشت اما یوزر ایجنت نداشت، اون رو دقیقاً زیر headers تزریق می‌کنیم
+                            if not has_ua then
+                                local h_indent = line:match("^(%s*)")
+                                table.insert(mutated, h_indent .. "  User-Agent: \"" .. random_ua .. "\"")
                             end
                         end
                     end
