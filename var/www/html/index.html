@@ -3,23 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Not Found - FP Network</title>
+    <title>FP Network - Secure Cloud Storage</title>
     <style>
-        :root { --primary: #2563eb; --primary-hover: #1d4ed8; --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b; --card-bg: #ffffff; --border-color: #e2e8f0; }
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; text-align: center; }
-        header { background: var(--card-bg); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+        
+        /* Navbar */
+        header { background: var(--card-bg); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-        main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; }
-        h1 { font-size: 8rem; font-weight: 800; color: #cbd5e1; line-height: 1; margin-bottom: 15px; letter-spacing: -0.02em; }
-        h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); }
-        p { font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin-bottom: 35px; line-height: 1.6; }
-        .btn { background: var(--primary); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 500; transition: background 0.2s; border: none; cursor: pointer; }
-        .btn:hover { background: var(--primary-hover); }
-        footer { background: #0f172a; color: #94a3b8; padding: 30px 0; font-size: 0.95rem; }
+        nav { display: flex; align-items: center; gap: 20px; }
+        nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
+        nav a:hover { color: var(--primary); }
+        .btn-login { background: var(--primary); color: white; padding: 8px 20px; border-radius: 6px; font-weight: 500; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn-login:hover { background: var(--primary-hover); color: white; }
+
+        /* Main Content */
+        main { padding: 4rem 5%; text-align: center; min-height: 70vh; display: flex; flex-direction: column; align-items: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 12px; font-weight: 800; letter-spacing: -0.02em; }
+        .hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        
+        /* Upload Box */
+        .upload-box { background: var(--card-bg); border: 2px dashed #cbd5e1; border-radius: 12px; padding: 50px; width: 100%; max-width: 650px; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); position: relative; }
+        .upload-box:hover, .upload-box.dragover { border-color: var(--primary); background: #f0fdf4; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
+        .upload-icon svg { width: 64px; height: 64px; fill: #94a3b8; margin-bottom: 20px; transition: fill 0.3s; }
+        .upload-box:hover .upload-icon svg { fill: var(--primary); }
+        .btn-upload { background: var(--primary); color: white; border: none; padding: 12px 28px; font-size: 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s; margin-top: 15px; }
+        .btn-upload:hover { background: var(--primary-hover); }
+        #file-input { display: none; }
+        
+        /* Progress & Messages */
+        .progress-container { display: none; margin-top: 25px; text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .progress-bar { width: 100%; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-top: 8px; height: 8px; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
+        .msg { margin-top: 20px; font-size: 0.95rem; color: #b91c1c; display: none; background: #fef2f2; padding: 12px; border-radius: 6px; border: 1px solid #fecaca; }
+        
+        /* Features */
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; width: 100%; max-width: 1000px; margin-top: 60px; }
+        .feature-card { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: left; }
+        .feature-card h3 { color: var(--text-main); margin-bottom: 12px; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
+        .feature-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal { background: var(--card-bg); width: 100%; max-width: 400px; border-radius: 12px; padding: 30px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .modal h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--text-main); }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--text-muted); }
+        .form-group input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; outline: none; transition: border 0.2s; }
+        .form-group input:focus { border-color: var(--primary); }
+        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; font-size: 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; margin-top: 10px; }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+        .auth-error { color: #b91c1c; font-size: 0.9rem; margin-top: 15px; display: none; text-align: center; }
+
+        footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 30px 0; width: 100%; margin-top: auto; }
+        footer a { color: #cbd5e1; text-decoration: none; margin: 0 12px; font-size: 0.9rem; }
+        footer a:hover { color: white; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            nav { display: none; } /* Hide links on mobile for simplicity, keep logo */
+        }
     </style>
 </head>
 <body>
+
     <header>
         <a href="/" class="logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--primary)" xmlns="http://www.w3.org/2000/svg">
@@ -27,15 +84,179 @@
             </svg>
             FP Network
         </a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="#premium">Premium</a>
+            <a href="#api">Developers API</a>
+            <button class="btn-login" onclick="openModal()">Login / Register</button>
+        </nav>
     </header>
+
     <main>
-        <h1>404</h1>
-        <h2>Page Not Found</h2>
-        <p>The file or directory you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
-        <a href="/" class="btn">Return to Homepage</a>
+        <section class="hero">
+            <h1>Secure Cloud Storage</h1>
+            <p>Enterprise-grade file hosting. Upload, manage, and share your files globally with zero bandwidth throttling.</p>
+            
+            <div class="upload-box" id="drop-zone">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.44 11.22c-.67-3.48-3.7-6.02-7.44-6.02-3.13 0-5.83 1.83-7.04 4.46C2.37 10.15 0 12.75 0 16c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.67-2.01-4.85-4.56-4.78zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                </div>
+                <h3 style="color: var(--text-main); margin-bottom: 8px;">Drag & Drop files here</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">Maximum file size: 5GB (Premium), 5MB (Guest)</p>
+                <input type="file" id="file-input">
+                <button class="btn-upload" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                
+                <div class="progress-container" id="progress-container">
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--text-main);">
+                        <span id="file-name-display">Uploading...</span>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="msg" id="error-msg"></div>
+            </div>
+        </section>
+
+        <section class="features" id="premium">
+            <div class="feature-card">
+                <h3>Military-Grade Security</h3>
+                <p>All uploads are encrypted using AES-256 bit encryption. Your files remain completely private and inaccessible to third parties.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Global CDN</h3>
+                <p>Files are distributed across our global edge nodes, guaranteeing maximum download speeds regardless of geographic location.</p>
+            </div>
+            <div class="feature-card">
+                <h3>API Access</h3>
+                <p>Automate your workflow with our RESTful API. Seamlessly integrate file uploading and management into your own applications.</p>
+            </div>
+        </section>
     </main>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <h2>Account Login</h2>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" required placeholder="name@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-submit" id="login-btn">Sign In</button>
+                <div class="auth-error" id="auth-error"></div>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2026 FP Network Storage. All rights reserved.</p>
+        <div style="margin-top: 15px;">
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Report Abuse (DMCA)</a>
+        </div>
     </footer>
+
+    <script>
+        // Upload Logic
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        const progressContainer = document.getElementById('progress-container');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const errorMsg = document.getElementById('error-msg');
+        const fileNameDisplay = document.getElementById('file-name-display');
+
+        function simulateUpload(file) {
+            errorMsg.style.display = 'none';
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressText.innerText = '0%';
+            
+            // Truncate long names
+            let displayName = file.name;
+            if(displayName.length > 25) displayName = displayName.substring(0, 22) + "...";
+            fileNameDisplay.innerText = "Uploading: " + displayName;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 5;
+                if (progress >= 85) {
+                    clearInterval(interval);
+                    progressFill.style.width = '85%';
+                    progressText.innerText = '85%';
+                    
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        errorMsg.innerHTML = "<strong>Upload Rejected:</strong> Guest policy violation. File exceeds 5MB limit. Please <a href='javascript:void(0)' onclick='openModal()' style='color:#b91c1c;'>login to your account</a>.";
+                        errorMsg.style.display = 'block';
+                        fileInput.value = ''; 
+                    }, 1000);
+                } else {
+                    progressFill.style.width = progress + '%';
+                    progressText.innerText = progress + '%';
+                }
+            }, 300);
+        }
+
+        fileInput.addEventListener('change', function() {
+            if(this.files.length > 0) simulateUpload(this.files[0]);
+        });
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            if(dt.files.length > 0) simulateUpload(dt.files[0]);
+        }, false);
+
+        // Modal Logic
+        const modal = document.getElementById('auth-modal');
+        function openModal() { modal.style.display = 'flex'; document.getElementById('auth-error').style.display = 'none'; }
+        function closeModal() { modal.style.display = 'none'; }
+        
+        // Close modal on background click
+        window.onclick = function(event) {
+            if (event.target == modal) closeModal();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const err = document.getElementById('auth-error');
+            
+            btn.disabled = true;
+            btn.innerText = "Authenticating...";
+            err.style.display = 'none';
+
+            // Simulate network request
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = "Sign In";
+                err.innerText = "Authentication failed: Invalid credentials or account is suspended.";
+                err.style.display = 'block';
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
